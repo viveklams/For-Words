@@ -1,4 +1,5 @@
 import express from "express";
+import User from "./../models/User/js";
 
 const router = express.Router();
 
@@ -29,9 +30,21 @@ router.post("/register", async (req, res) => {
     }
 
     const existingUsername = await User.findOne({ username });
-    if (exisitingUsername) {
+    if (existingUsername) {
       return res.status(400).json({ message: "Username already exists" });
     }
+
+    //get random avataar
+    const profileImage = `https://api.dicebar.com/7.x/avataaars/svg?seed=${username}`;
+
+    const user = new User({
+      email,
+      username,
+      password,
+      profileImage,
+    });
+
+    await user.save();
   } catch (error) {}
 });
 
